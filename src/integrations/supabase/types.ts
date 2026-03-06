@@ -14,7 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      media: {
+        Row: {
+          category: string
+          client: string | null
+          created_at: string | null
+          description: string | null
+          details: string | null
+          file_url: string
+          height: number | null
+          id: string
+          location: string | null
+          photographer: string | null
+          sort_order: number | null
+          thumbnail_url: string | null
+          title: string
+          type: string
+          updated_at: string | null
+          user_id: string
+          width: number | null
+        }
+        Insert: {
+          category?: string
+          client?: string | null
+          created_at?: string | null
+          description?: string | null
+          details?: string | null
+          file_url: string
+          height?: number | null
+          id?: string
+          location?: string | null
+          photographer?: string | null
+          sort_order?: number | null
+          thumbnail_url?: string | null
+          title?: string
+          type?: string
+          updated_at?: string | null
+          user_id: string
+          width?: number | null
+        }
+        Update: {
+          category?: string
+          client?: string | null
+          created_at?: string | null
+          description?: string | null
+          details?: string | null
+          file_url?: string
+          height?: number | null
+          id?: string
+          location?: string | null
+          photographer?: string | null
+          sort_order?: number | null
+          thumbnail_url?: string | null
+          title?: string
+          type?: string
+          updated_at?: string | null
+          user_id?: string
+          width?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -53,10 +53,10 @@ const PortfolioHeader = ({ activeCategory }: PortfolioHeaderProps) => {
         >
           {hoveredItem === 'name' ? (
             <TextRoll duration={0.3} getEnterDelay={(i) => i * 0.02} getExitDelay={(i) => i * 0.02}>
-              MORGAN BLAKE
+              BHAVESH CHAUDHARI
             </TextRoll>
           ) : (
-            "MORGAN BLAKE"
+            "BHAVESH CHAUDHARI"
           )}
         </Link>
 

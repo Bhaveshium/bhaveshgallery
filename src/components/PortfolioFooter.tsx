@@ -3,26 +3,19 @@ const PortfolioFooter = () => {
     <footer className="max-w-[1600px] mx-auto px-3 md:px-5 pb-16">
       <div className="text-center text-[10px] uppercase tracking-widest font-inter text-muted-foreground">
         <a
-          href="mailto:hello@morganblake.com"
+          href="mailto:www.bhaveshandcars@gmail.com"
           className="hover:text-foreground transition-colors"
         >
-          E: hello@morganblake.com
+          E: www.bhaveshandcars@gmail.com
         </a>
         <span className="mx-2">/</span>
         <a
-          href="tel:+442071234567"
-          className="hover:text-foreground transition-colors"
-        >
-          M: +44 (0)20 7123 4567
-        </a>
-        <span className="mx-2">/</span>
-        <a
-          href="https://instagram.com/morganblake.photo"
+          href="https://pin.it/42bhdp2gA"
           target="_blank"
           rel="noopener noreferrer"
           className="hover:text-foreground transition-colors"
         >
-          I: @morganblake.photo
+          Pinterest
         </a>
       </div>
     </footer>
