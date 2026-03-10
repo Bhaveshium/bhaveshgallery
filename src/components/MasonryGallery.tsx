@@ -157,7 +157,7 @@ const MasonryGallery = ({ images, onImageClick }: MasonryGalleryProps) => {
                 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
               />
-              {image.photographer && image.client && (
+              {(image.title || image.photographer || image.client) && (
                 <motion.div
                   className="absolute bottom-0 left-0 w-full pointer-events-none"
                   animate={hoveredIndex === index ? "visible" : "hidden"}
@@ -168,12 +168,16 @@ const MasonryGallery = ({ images, onImageClick }: MasonryGalleryProps) => {
                   transition={{ duration: 0.2, ease: "easeOut" }}
                 >
                   <div className="flex flex-col items-center gap-0 px-4 py-3 text-center">
-                    <p className="text-base font-medium text-white">
-                      For {image.client}
-                    </p>
-                    <span className="text-xs text-white/90">
-                      Shot in {image.location}. {image.details}.
-                    </span>
+                    {image.title && (
+                      <p className="text-base font-medium text-white">
+                        {image.title}
+                      </p>
+                    )}
+                    {image.location && (
+                      <span className="text-xs text-white/90">
+                        {image.location}
+                      </span>
+                    )}
                   </div>
                 </motion.div>
               )}
