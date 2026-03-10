@@ -37,6 +37,7 @@ const Index = () => {
           setDisplayImages(data.map((item: any) => ({
             src: item.file_url,
             alt: item.title || "Photography",
+            title: item.title || "",
             photographer: item.photographer || "Bhavesh Chaudhari",
             client: item.client || "",
             location: item.location || "",
