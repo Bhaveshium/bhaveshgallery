@@ -9,7 +9,7 @@ const PhotographerBio = () => {
           DATA & PHOTOGRAPHY
         </p>
         <p className="text-sm text-foreground/80 max-w-2xl leading-relaxed mx-auto">
-          Capturing moments through a unique lens — blending data-driven creativity with visual storytelling.
+          Through lenses and algorithms, we translate light and logic into narratives that make the unseen both visible and meaningful.
         </p>
       </div>
     </section>
