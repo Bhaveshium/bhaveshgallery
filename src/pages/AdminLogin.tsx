@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,7 +32,10 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 relative">
+      <Link to="/" className="absolute top-6 left-6 text-xs uppercase tracking-widest font-inter text-muted-foreground hover:text-foreground transition-colors">
+        ← Home
+      </Link>
       <div className="w-full max-w-sm space-y-8">
         <div className="text-center space-y-2">
           <h1 className="font-playfair text-3xl text-foreground">Admin</h1>
