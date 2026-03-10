@@ -88,7 +88,7 @@ const About = () => {
             <div className="pt-8">
               <h2 className="font-playfair text-xl text-foreground mb-4">What I Do</h2>
               <p className="text-foreground/70 text-xs uppercase tracking-wider leading-loose">
-                Portrait Photography / Fashion & Editorial / Automotive / Creative Direction / Data & Analytics
+                Portrait Photography / Story Telling / Automotive / Creative Direction / Data & Analytics
               </p>
             </div>
           </div>
