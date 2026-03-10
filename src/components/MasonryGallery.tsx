@@ -4,6 +4,7 @@ import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 
 interface GalleryItem {
   type?: "image" | "video";
+  title?: string;
   src: string;
   videoSrc?: string;
   highResSrc?: string;
