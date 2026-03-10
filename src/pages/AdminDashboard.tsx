@@ -158,7 +158,10 @@ const AdminDashboard = () => {
       {/* Header */}
       <div className="border-b border-border">
         <div className="max-w-[1200px] mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="font-playfair text-xl text-foreground">Admin Dashboard</h1>
+          <div className="flex items-center gap-4">
+            <Link to="/" className="text-xs uppercase tracking-widest font-inter text-muted-foreground hover:text-foreground transition-colors">← Home</Link>
+            <h1 className="font-playfair text-xl text-foreground">Admin Dashboard</h1>
+          </div>
           <div className="flex items-center gap-3">
             <Button variant="outline" size="sm" onClick={() => { setShowForm(true); setEditingId(null); }}>
               <Plus className="w-4 h-4 mr-1" /> Add Media
