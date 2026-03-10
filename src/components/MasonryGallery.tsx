@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "motion/react";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 
@@ -26,7 +26,9 @@ interface MasonryGalleryProps {
 const MasonryGallery = ({ images, onImageClick }: MasonryGalleryProps) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+  const [tilt, setTilt] = useState<{ rotateX: number; rotateY: number }>({ rotateX: 0, rotateY: 0 });
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const tiltRef = useRef<HTMLButtonElement | null>(null);
 
   const handleImageLoad = (index: number) => {
     setLoadedImages((prev) => new Set(prev).add(index));
@@ -34,46 +36,53 @@ const MasonryGallery = ({ images, onImageClick }: MasonryGalleryProps) => {
 
   const handleImageHover = (index: number) => {
     setHoveredIndex(index);
-
-    // Clear existing timer
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-
-    // Set new timer to reset after 2800ms
-    timerRef.current = setTimeout(() => {
-      setHoveredIndex(null);
-    }, 2800);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setHoveredIndex(null), 2800);
   };
 
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLButtonElement>, index: number) => {
+    if (hoveredIndex !== index) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to 0.5
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setTilt({
+      rotateY: x * 12,   // max 6deg tilt
+      rotateX: -y * 12,  // invert Y for natural feel
+    });
+  }, [hoveredIndex]);
+
   const handleImageLeave = () => {
-    // Don't reset hoveredIndex on mouse leave, let the timer handle it
+    setTilt({ rotateX: 0, rotateY: 0 });
   };
 
   useEffect(() => {
-    // Cleanup timer on unmount
     return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, []);
 
   return (
     <div className="max-w-[1600px] mx-auto md:px-5 pb-16">
-      <div className="gallery-hover-container text-center">
+      <div className="gallery-hover-container text-center" style={{ perspective: "800px" }}>
         {images.map((image, index) => (
           <button
             key={index}
             onClick={() => onImageClick(index)}
             onMouseEnter={() => handleImageHover(index)}
+            onMouseMove={(e) => handleMouseMove(e, index)}
             onMouseLeave={handleImageLeave}
             className="relative cursor-zoom-in gallery-image inline-block align-top p-[3px] md:p-1 lg:p-1.5"
-            style={{ height: "270px" }}
+            style={{
+              height: "270px",
+              transform: hoveredIndex === index
+                ? `rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg) scale(1.03)`
+                : "rotateX(0) rotateY(0) scale(1)",
+              transition: "transform 0.15s ease-out",
+              transformStyle: "preserve-3d",
+            }}
           >
             <div className="relative h-full overflow-hidden">
               {image.type === "video" ? (
-                // Video element with thumbnail poster
                 <div className="relative h-full w-auto inline-block">
                   {image.width && image.height && (
                     <svg
@@ -82,11 +91,7 @@ const MasonryGallery = ({ images, onImageClick }: MasonryGalleryProps) => {
                       viewBox={`0 0 ${image.width} ${image.height}`}
                       className="h-full w-auto"
                     >
-                      <rect
-                        width={image.width}
-                        height={image.height}
-                        fill="white"
-                      />
+                      <rect width={image.width} height={image.height} fill="white" />
                     </svg>
                   )}
                   <video
@@ -97,9 +102,7 @@ const MasonryGallery = ({ images, onImageClick }: MasonryGalleryProps) => {
                     playsInline
                     onLoadedData={() => handleImageLoad(index)}
                     className={`absolute top-0 left-0 h-full w-auto object-contain transition-all duration-400 ${
-                      hoveredIndex !== null && hoveredIndex !== index
-                        ? "grayscale"
-                        : ""
+                      hoveredIndex !== null && hoveredIndex !== index ? "grayscale" : ""
                     }`}
                     style={{
                       opacity: loadedImages.has(index) ? 1 : 0,
@@ -110,11 +113,8 @@ const MasonryGallery = ({ images, onImageClick }: MasonryGalleryProps) => {
                   </video>
                 </div>
               ) : (
-                // Image element with SVG placeholder
                 <picture
-                  className={`inline-block h-full w-auto ${
-                    loadedImages.has(index) ? "show" : ""
-                  }`}
+                  className={`inline-block h-full w-auto ${loadedImages.has(index) ? "show" : ""}`}
                 >
                   {image.width && image.height && (
                     <svg
@@ -123,11 +123,7 @@ const MasonryGallery = ({ images, onImageClick }: MasonryGalleryProps) => {
                       viewBox={`0 0 ${image.width} ${image.height}`}
                       className="h-full w-auto"
                     >
-                      <rect
-                        width={image.width}
-                        height={image.height}
-                        fill="white"
-                      />
+                      <rect width={image.width} height={image.height} fill="white" />
                     </svg>
                   )}
                   <img
@@ -135,9 +131,7 @@ const MasonryGallery = ({ images, onImageClick }: MasonryGalleryProps) => {
                     alt={image.alt}
                     onLoad={() => handleImageLoad(index)}
                     className={`absolute top-0 left-0 h-full w-auto object-contain transition-all duration-400 ${
-                      hoveredIndex !== null && hoveredIndex !== index
-                        ? "grayscale"
-                        : ""
+                      hoveredIndex !== null && hoveredIndex !== index ? "grayscale" : ""
                     }`}
                     style={{
                       opacity: loadedImages.has(index) ? 1 : 0,
@@ -159,22 +153,22 @@ const MasonryGallery = ({ images, onImageClick }: MasonryGalleryProps) => {
               />
               {(image.title || image.photographer || image.client) && (
                 <motion.div
-                  className="absolute bottom-0 left-0 w-full pointer-events-none"
+                  className="absolute bottom-0 left-0 w-full pointer-events-none flex items-center justify-center"
                   animate={hoveredIndex === index ? "visible" : "hidden"}
                   variants={{
-                    hidden: { opacity: 0 },
-                    visible: { opacity: 1 },
+                    hidden: { opacity: 0, y: 8 },
+                    visible: { opacity: 1, y: 0 },
                   }}
-                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
                 >
-                  <div className="flex flex-col items-center gap-0 px-4 py-3 text-center">
+                  <div className="flex flex-col items-center gap-0.5 px-4 py-3 text-center">
                     {image.title && (
-                      <p className="text-base font-medium text-white">
+                      <p className="text-sm font-semibold tracking-wide text-white drop-shadow-md">
                         {image.title}
                       </p>
                     )}
                     {image.location && (
-                      <span className="text-xs text-white/90">
+                      <span className="text-[11px] text-white/80 tracking-wider uppercase">
                         {image.location}
                       </span>
                     )}
