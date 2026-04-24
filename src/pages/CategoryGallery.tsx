@@ -7,18 +7,18 @@ import MasonryGallery from "@/components/MasonryGallery";
 import Lightbox from "@/components/Lightbox";
 import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
-
-const validCategories = ['selected', 'commissioned', 'editorial', 'personal', 'all'];
+import { slugToCategory } from "@/lib/categories";
 
 const CategoryGallery = () => {
-  const { category } = useParams<{ category: string }>();
+  const { category: slug } = useParams<{ category: string }>();
   const [images, setImages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  const isValid = category && validCategories.includes(category.toLowerCase());
-  const categoryUpper = category?.toUpperCase() || "";
+  const isAll = slug?.toLowerCase() === "all";
+  const matchedCategory = slug ? slugToCategory(slug) : null;
+  const isValid = isAll || !!matchedCategory;
 
   useEffect(() => {
     if (!isValid) return;
@@ -26,18 +26,23 @@ const CategoryGallery = () => {
       try {
         setLoading(true);
         let query = supabase.from("media").select("*").order("sort_order", { ascending: true });
-        if (categoryUpper !== "ALL") {
-          query = query.eq("category", categoryUpper);
+        if (!isAll && matchedCategory) {
+          query = query.eq("category", matchedCategory);
         }
         const { data, error } = await query;
         if (error) throw error;
         setImages((data || []).map((item: any) => ({
           src: item.file_url,
           alt: item.title || "Photography",
+          title: item.title || "",
           photographer: item.photographer || "Bhavesh Chaudhari",
-          client: item.client || "",
           location: item.location || "",
           details: item.details || "",
+          description: item.description || "",
+          category: item.category || "",
+          photo_type: item.photo_type || "",
+          date_taken: item.date_taken || null,
+          tags: item.tags || [],
           width: item.width || 800,
           height: item.height || 600,
         })));
@@ -48,7 +53,7 @@ const CategoryGallery = () => {
       }
     };
     loadImages();
-  }, [categoryUpper, isValid]);
+  }, [slug, isValid, isAll, matchedCategory]);
 
   if (!isValid) {
     return <Navigate to="/" replace />;
@@ -59,22 +64,16 @@ const CategoryGallery = () => {
     setLightboxOpen(true);
   };
 
-  const getCategoryTitle = (cat: string) => {
-    const titles: Record<string, string> = {
-      selected: "Selected Works", commissioned: "Commissioned Projects",
-      editorial: "Editorial Photography", personal: "Personal Projects", all: "All Photography",
-    };
-    return titles[cat] || "Gallery";
-  };
+  const title = isAll ? "All Photography" : matchedCategory || "Gallery";
 
   return (
     <>
       <SEO
-        title={`${getCategoryTitle(category!)} - Bhavesh Chaudhari`}
-        description={`${getCategoryTitle(category!)} by Bhavesh Chaudhari`}
-        canonicalUrl={`/category/${category}`}
+        title={`${title} - Bhavesh Chaudhari`}
+        description={`${title} by Bhavesh Chaudhari`}
+        canonicalUrl={`/category/${slug}`}
       />
-      <PortfolioHeader activeCategory={categoryUpper} />
+      <PortfolioHeader activeCategory={matchedCategory || ""} />
       <main>
         <PhotographerBio />
         {!loading && images.length > 0 && (

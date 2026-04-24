@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Trash2, Edit2, Plus, LogOut, X, Save } from "lucide-react";
+import { CATEGORIES, PHOTO_TYPES } from "@/lib/categories";
 
 interface MediaItem {
   id: string;
@@ -18,13 +19,27 @@ interface MediaItem {
   width: number | null;
   height: number | null;
   photographer: string;
-  client: string;
   location: string;
   details: string;
   sort_order: number;
+  photo_type?: string;
+  date_taken?: string | null;
+  tags?: string[];
 }
 
-const categories = ["SELECTED", "COMMISSIONED", "EDITORIAL", "PERSONAL"];
+const emptyForm = {
+  title: "",
+  description: "",
+  category: CATEGORIES[0] as string,
+  type: "image",
+  photo_type: "",
+  photographer: "",
+  location: "",
+  details: "",
+  date_taken: "",
+  tags: "",
+  sort_order: 0,
+};
 
 const AdminDashboard = () => {
   const [session, setSession] = useState<any>(null);
@@ -33,10 +48,7 @@ const AdminDashboard = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [form, setForm] = useState({
-    title: "", description: "", category: "SELECTED", type: "image",
-    photographer: "", client: "", location: "", details: "", sort_order: 0,
-  });
+  const [form, setForm] = useState({ ...emptyForm });
   const [file, setFile] = useState<File | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -73,7 +85,7 @@ const AdminDashboard = () => {
   };
 
   const resetForm = () => {
-    setForm({ title: "", description: "", category: "SELECTED", type: "image", photographer: "", client: "", location: "", details: "", sort_order: 0 });
+    setForm({ ...emptyForm });
     setFile(null);
     setEditingId(null);
     setShowForm(false);
@@ -81,9 +93,17 @@ const AdminDashboard = () => {
 
   const handleEdit = (item: MediaItem) => {
     setForm({
-      title: item.title, description: item.description || "", category: item.category,
-      type: item.type, photographer: item.photographer || "", client: item.client || "",
-      location: item.location || "", details: item.details || "", sort_order: item.sort_order || 0,
+      title: item.title,
+      description: item.description || "",
+      category: CATEGORIES.includes(item.category as any) ? item.category : (CATEGORIES[0] as string),
+      type: item.type,
+      photo_type: item.photo_type || "",
+      photographer: item.photographer || "",
+      location: item.location || "",
+      details: item.details || "",
+      date_taken: item.date_taken || "",
+      tags: (item.tags || []).join(", "),
+      sort_order: item.sort_order || 0,
     });
     setEditingId(item.id);
     setShowForm(true);
@@ -100,14 +120,52 @@ const AdminDashboard = () => {
     }
   };
 
+  const buildPayload = () => {
+    const tags = form.tags
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+    return {
+      title: form.title,
+      description: form.description,
+      category: form.category,
+      type: form.type,
+      photo_type: form.photo_type,
+      photographer: form.photographer,
+      location: form.location,
+      details: form.details,
+      date_taken: form.date_taken || null,
+      tags,
+      sort_order: form.sort_order,
+    };
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!session?.user?.id) return;
     setUploading(true);
 
     let fileUrl = "";
+    let imgWidth: number | null = null;
+    let imgHeight: number | null = null;
 
     if (file) {
+      // Read intrinsic size for images so masonry can use real aspect ratios
+      if (file.type.startsWith("image/")) {
+        try {
+          const dims = await new Promise<{ w: number; h: number }>((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve({ w: img.naturalWidth, h: img.naturalHeight });
+            img.onerror = reject;
+            img.src = URL.createObjectURL(file);
+          });
+          imgWidth = dims.w;
+          imgHeight = dims.h;
+        } catch {
+          // ignore
+        }
+      }
+
       const ext = file.name.split(".").pop();
       const path = `${session.user.id}/${Date.now()}.${ext}`;
       const { error: uploadError } = await supabase.storage.from("media").upload(path, file);
@@ -120,10 +178,13 @@ const AdminDashboard = () => {
       fileUrl = urlData.publicUrl;
     }
 
+    const basePayload: any = buildPayload();
+
     if (editingId) {
-      const updateData: any = { ...form };
-      if (fileUrl) updateData.file_url = fileUrl;
-      const { error } = await supabase.from("media").update(updateData).eq("id", editingId);
+      if (fileUrl) basePayload.file_url = fileUrl;
+      if (imgWidth) basePayload.width = imgWidth;
+      if (imgHeight) basePayload.height = imgHeight;
+      const { error } = await supabase.from("media").update(basePayload).eq("id", editingId);
       if (error) {
         toast({ title: "Error", description: error.message, variant: "destructive" });
       } else {
@@ -138,7 +199,11 @@ const AdminDashboard = () => {
         return;
       }
       const { error } = await supabase.from("media").insert({
-        ...form, file_url: fileUrl, user_id: session.user.id,
+        ...basePayload,
+        file_url: fileUrl,
+        width: imgWidth,
+        height: imgHeight,
+        user_id: session.user.id,
       });
       if (error) {
         toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -155,7 +220,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <div className="border-b border-border">
         <div className="max-w-[1200px] mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -174,7 +238,6 @@ const AdminDashboard = () => {
       </div>
 
       <div className="max-w-[1200px] mx-auto px-4 py-8">
-        {/* Add/Edit Form */}
         {showForm && (
           <div className="mb-8 border border-border p-6 space-y-4">
             <div className="flex items-center justify-between">
@@ -188,7 +251,7 @@ const AdminDashboard = () => {
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
                 className="border border-border bg-background px-3 py-2 text-sm"
               >
-                {categories.map((c) => <option key={c} value={c}>{c}</option>)}
+                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
               <select
                 value={form.type}
@@ -198,13 +261,22 @@ const AdminDashboard = () => {
                 <option value="image">Image</option>
                 <option value="video">Video</option>
               </select>
+              <select
+                value={form.photo_type}
+                onChange={(e) => setForm({ ...form, photo_type: e.target.value })}
+                className="border border-border bg-background px-3 py-2 text-sm"
+              >
+                <option value="">Type (Portrait, Landscape, ...)</option>
+                {PHOTO_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+              </select>
+              <Input placeholder="Location (City, Country)" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
+              <Input type="date" placeholder="Date" value={form.date_taken} onChange={(e) => setForm({ ...form, date_taken: e.target.value })} />
               <Input placeholder="Photographer" value={form.photographer} onChange={(e) => setForm({ ...form, photographer: e.target.value })} />
-              <Input placeholder="Client" value={form.client} onChange={(e) => setForm({ ...form, client: e.target.value })} />
-              <Input placeholder="Location" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
               <Input placeholder="Sort Order" type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} />
-              <Input type="file" accept="image/*,video/*" onChange={(e) => setFile(e.target.files?.[0] || null)} />
-              <Textarea placeholder="Details" value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} className="md:col-span-2" />
-              <Textarea placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="md:col-span-2" />
+              <Input type="file" accept="image/*,video/*" onChange={(e) => setFile(e.target.files?.[0] || null)} className="md:col-span-2" />
+              <Input placeholder="Tags (comma separated, 5–10 keywords)" value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} className="md:col-span-2" />
+              <Textarea placeholder="Description (1–2 lines, shown when photo is opened)" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="md:col-span-2" />
+              <Textarea placeholder="Additional details (optional)" value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} className="md:col-span-2" />
               <div className="md:col-span-2">
                 <Button type="submit" disabled={uploading} className="w-full">
                   <Save className="w-4 h-4 mr-2" /> {uploading ? "Uploading..." : editingId ? "Update" : "Add"}
@@ -214,7 +286,6 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        {/* Media Grid */}
         {media.length === 0 ? (
           <div className="text-center py-20 text-muted-foreground">
             <p>No media items yet. Click "Add Media" to get started.</p>

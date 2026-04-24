@@ -12,8 +12,8 @@ import fallback1 from "@/assets/gallery/bhavesh-1.png";
 import fallback2 from "@/assets/gallery/bhavesh-2.png";
 
 const fallbackImages = [
-  { src: fallback1, alt: "Portrait in spotlight", photographer: "Bhavesh Chaudhari", client: "", location: "", details: "", width: 800, height: 1000 },
-  { src: fallback2, alt: "Motorcycle portrait", photographer: "Bhavesh Chaudhari", client: "", location: "", details: "", width: 1024, height: 1024 },
+  { src: fallback1, alt: "Portrait in spotlight", photographer: "Bhavesh Chaudhari", location: "", details: "", width: 800, height: 1000 },
+  { src: fallback2, alt: "Motorcycle portrait", photographer: "Bhavesh Chaudhari", location: "", details: "", width: 1024, height: 1024 },
 ];
 
 const Index = () => {
@@ -39,14 +39,17 @@ const Index = () => {
             alt: item.title || "Photography",
             title: item.title || "",
             photographer: item.photographer || "Bhavesh Chaudhari",
-            client: item.client || "",
             location: item.location || "",
             details: item.details || "",
+            description: item.description || "",
+            category: item.category || "",
+            photo_type: item.photo_type || "",
+            date_taken: item.date_taken || null,
+            tags: item.tags || [],
             width: item.width || 800,
             height: item.height || 600,
           })));
         } else {
-          // Use fallback images when DB is empty
           setDisplayImages(fallbackImages);
         }
       } catch (err) {
@@ -84,7 +87,7 @@ const Index = () => {
         ogType="profile"
         jsonLd={jsonLd}
       />
-      <PortfolioHeader activeCategory="SELECTED" />
+      <PortfolioHeader activeCategory="" />
       <main>
         <PhotographerBio />
         {!loading && displayImages.length > 0 && (
