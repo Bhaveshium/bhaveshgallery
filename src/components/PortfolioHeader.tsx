@@ -3,17 +3,13 @@ import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import FocusTrap from "focus-trap-react";
 import { TextRoll } from "@/components/ui/text-roll";
+import { CATEGORIES, categoryToSlug } from "@/lib/categories";
 
 interface PortfolioHeaderProps {
   activeCategory: string;
 }
 
-const categories = [
-  "SELECTED",
-  "COMMISSIONED",
-  "EDITORIAL",
-  "PERSONAL",
-];
+const categories = CATEGORIES;
 
 const PortfolioHeader = ({ activeCategory }: PortfolioHeaderProps) => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
@@ -75,7 +71,7 @@ const PortfolioHeader = ({ activeCategory }: PortfolioHeaderProps) => {
         {categories.map((category) => (
           <Link
             key={category}
-            to={`/category/${category.toLowerCase()}`}
+            to={`/category/${categoryToSlug(category)}`}
             onMouseEnter={() => setHoveredItem(category)}
             onMouseLeave={() => setHoveredItem(null)}
             className={`text-[10px] md:text-[11px] uppercase tracking-widest font-inter transition-colors whitespace-nowrap ${
@@ -136,7 +132,7 @@ const PortfolioHeader = ({ activeCategory }: PortfolioHeaderProps) => {
                 {categories.map((category) => (
                   <Link
                     key={category}
-                    to={`/category/${category.toLowerCase()}`}
+                    to={`/category/${categoryToSlug(category)}`}
                     onClick={() => setMobileMenuOpen(false)}
                     className={`text-lg uppercase tracking-widest font-inter transition-colors ${
                       activeCategory === category
