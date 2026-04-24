@@ -40,71 +40,75 @@ const PortfolioHeader = ({ activeCategory }: PortfolioHeaderProps) => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background">
-      <div className="max-w-[1600px] mx-auto flex items-center justify-between md:justify-center px-3 md:px-5 py-3 gap-3">
-        <Link
-          to="/"
-          className="text-[10px] md:text-[11px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors font-inter whitespace-nowrap"
-          onMouseEnter={() => setHoveredItem('name')}
-          onMouseLeave={() => setHoveredItem(null)}
-        >
-          {hoveredItem === 'name' ? (
-            <TextRoll duration={0.3} getEnterDelay={(i) => i * 0.02} getExitDelay={(i) => i * 0.02}>
-              BHAVESH CHAUDHARI
-            </TextRoll>
-          ) : (
-            "BHAVESH CHAUDHARI"
-          )}
-        </Link>
-
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setMobileMenuOpen(true)}
-          className="md:hidden p-2 text-foreground/70 hover:text-foreground transition-colors"
-          aria-label="Open navigation menu"
-          aria-expanded={mobileMenuOpen}
-        >
-          <Menu size={20} />
-        </button>
-
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-3">
-        {categories.map((category) => (
+      <div className="max-w-[1600px] mx-auto px-3 md:px-5 py-3">
+        {/* Row 1: Name + Mobile menu button (mobile) | Name + About (desktop) */}
+        <div className="flex items-center justify-between md:justify-center md:gap-8">
           <Link
-            key={category}
-            to={`/category/${categoryToSlug(category)}`}
-            onMouseEnter={() => setHoveredItem(category)}
+            to="/"
+            className="text-[10px] md:text-[11px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors font-inter whitespace-nowrap"
+            onMouseEnter={() => setHoveredItem('name')}
             onMouseLeave={() => setHoveredItem(null)}
-            className={`text-[10px] md:text-[11px] uppercase tracking-widest font-inter transition-colors whitespace-nowrap ${
-              activeCategory === category
-                ? "text-foreground font-medium"
-                : "text-muted-foreground hover:text-foreground/80"
-            }`}
           >
-            {hoveredItem === category ? (
+            {hoveredItem === 'name' ? (
               <TextRoll duration={0.3} getEnterDelay={(i) => i * 0.02} getExitDelay={(i) => i * 0.02}>
-                {category}
+                BHAVESH CHAUDHARI
               </TextRoll>
             ) : (
-              category
+              "BHAVESH CHAUDHARI"
             )}
           </Link>
-        ))}
-        
-        <Link
-          to="/about"
-          className="text-[10px] md:text-[11px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors font-inter whitespace-nowrap"
-          onMouseEnter={() => setHoveredItem('about')}
-          onMouseLeave={() => setHoveredItem(null)}
-        >
-          {hoveredItem === 'about' ? (
-            <TextRoll duration={0.3} getEnterDelay={(i) => i * 0.02} getExitDelay={(i) => i * 0.02}>
-              ABOUT
-            </TextRoll>
-          ) : (
-            "ABOUT"
-          )}
-        </Link>
-      </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="md:hidden p-2 text-foreground/70 hover:text-foreground transition-colors"
+            aria-label="Open navigation menu"
+            aria-expanded={mobileMenuOpen}
+          >
+            <Menu size={20} />
+          </button>
+
+          {/* Desktop About link (row 1) */}
+          <Link
+            to="/about"
+            className="hidden md:inline-block text-[10px] md:text-[11px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors font-inter whitespace-nowrap"
+            onMouseEnter={() => setHoveredItem('about')}
+            onMouseLeave={() => setHoveredItem(null)}
+          >
+            {hoveredItem === 'about' ? (
+              <TextRoll duration={0.3} getEnterDelay={(i) => i * 0.02} getExitDelay={(i) => i * 0.02}>
+                ABOUT
+              </TextRoll>
+            ) : (
+              "ABOUT"
+            )}
+          </Link>
+        </div>
+
+        {/* Row 2: Desktop categories */}
+        <div className="hidden md:flex items-center justify-center flex-wrap gap-x-5 gap-y-2 mt-2">
+          {categories.map((category) => (
+            <Link
+              key={category}
+              to={`/category/${categoryToSlug(category)}`}
+              onMouseEnter={() => setHoveredItem(category)}
+              onMouseLeave={() => setHoveredItem(null)}
+              className={`text-[10px] md:text-[11px] uppercase tracking-widest font-inter transition-colors whitespace-nowrap ${
+                activeCategory === category
+                  ? "text-foreground font-medium"
+                  : "text-muted-foreground hover:text-foreground/80"
+              }`}
+            >
+              {hoveredItem === category ? (
+                <TextRoll duration={0.3} getEnterDelay={(i) => i * 0.02} getExitDelay={(i) => i * 0.02}>
+                  {category}
+                </TextRoll>
+              ) : (
+                category
+              )}
+            </Link>
+          ))}
+        </div>
 
         {/* Mobile Menu Overlay */}
         {mobileMenuOpen && (
