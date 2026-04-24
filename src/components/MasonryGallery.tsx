@@ -67,7 +67,7 @@ const MasonryGallery = ({ images, onImageClick }: MasonryGalleryProps) => {
       const rect = e.currentTarget.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width - 0.5;
       const y = (e.clientY - rect.top) / rect.height - 0.5;
-      setTilt({ rotateY: x * 12, rotateX: -y * 12 });
+      setTilt({ rotateY: x * 17, rotateX: -y * 17 });
     },
     [hoveredIndex]
   );
