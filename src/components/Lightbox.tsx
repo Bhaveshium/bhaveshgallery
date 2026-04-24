@@ -1,23 +1,28 @@
 import { useState, useEffect, useRef } from "react";
 
+interface LightboxImage {
+  src: string;
+  alt: string;
+  title?: string;
+  photographer?: string;
+  location?: string;
+  details?: string;
+  description?: string;
+  category?: string;
+  photo_type?: string;
+  date_taken?: string | null;
+  tags?: string[];
+}
+
 interface LightboxProps {
-  images: { 
-    src: string; 
-    alt: string;
-    photographer?: string;
-    client?: string;
-    location?: string;
-    details?: string;
-  }[];
+  images: LightboxImage[];
   initialIndex: number;
   onClose: () => void;
 }
 
 const Lightbox = ({ images, initialIndex, onClose }: LightboxProps) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -25,9 +30,9 @@ const Lightbox = ({ images, initialIndex, onClose }: LightboxProps) => {
       if (e.key === "ArrowLeft") handlePrevious();
       if (e.key === "ArrowRight") handleNext();
     };
-
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
 
   useEffect(() => {
@@ -38,124 +43,129 @@ const Lightbox = ({ images, initialIndex, onClose }: LightboxProps) => {
   }, []);
 
   const handleNext = () => {
-    if (currentIndex < images.length - 1) {
-      setCurrentIndex((prev) => prev + 1);
-    }
+    if (currentIndex < images.length - 1) setCurrentIndex((p) => p + 1);
   };
-
   const handlePrevious = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex((prev) => prev - 1);
-    }
-  };
-
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!imageRef.current) return;
-    
-    const imageRect = imageRef.current.getBoundingClientRect();
-    const clickX = e.clientX;
-    const clickY = e.clientY;
-    
-    // Check if click is outside image (top or bottom)
-    if (clickY < imageRect.top || clickY > imageRect.bottom) {
-      onClose();
-      return;
-    }
-    
-    // Check if click is on left or right side of image
-    const imageCenterX = imageRect.left + imageRect.width / 2;
-    if (clickX < imageCenterX) {
-      handlePrevious();
-    } else {
-      handleNext();
-    }
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!imageRef.current) return;
-    
-    const imageRect = imageRef.current.getBoundingClientRect();
-    const mouseX = e.clientX;
-    
-    setCursorPos({ x: e.clientX, y: e.clientY });
-    
-    // Update cursor style based on position
-    const imageCenterX = imageRect.left + imageRect.width / 2;
-    const container = containerRef.current;
-    if (container) {
-      if (mouseX < imageCenterX && currentIndex > 0) {
-        container.style.cursor = 'w-resize';
-      } else if (mouseX >= imageCenterX && currentIndex < images.length - 1) {
-        container.style.cursor = 'e-resize';
-      } else {
-        container.style.cursor = 'default';
-      }
-    }
+    if (currentIndex > 0) setCurrentIndex((p) => p - 1);
   };
 
   const currentImage = images[currentIndex];
+  const formattedDate = currentImage.date_taken
+    ? new Date(currentImage.date_taken).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+      })
+    : null;
 
   return (
     <div
-      className="fixed inset-0 bg-background z-[100] flex items-center justify-center animate-fade-in"
-      onMouseMove={handleMouseMove}
+      ref={containerRef}
+      className="fixed inset-0 bg-background z-[100] overflow-y-auto animate-fade-in"
     >
-      {/* Back Button - Top Left */}
+      {/* Close Button */}
       <button
         onClick={onClose}
-        className="fixed top-0 left-0 w-16 h-16 md:w-[6em] md:h-[6em] z-[200] flex items-center justify-center opacity-30 hover:opacity-100 transition-opacity"
+        className="fixed top-6 right-6 z-[200] text-foreground/60 hover:text-foreground transition-opacity text-xs uppercase tracking-widest font-inter"
         aria-label="Close lightbox"
       >
-        <svg viewBox="0 0 60.08 60.08" className="absolute left-6 top-6 md:left-[2.4em] md:top-[2.4em] w-6 h-6 md:w-[1.8em] md:h-[1.8em]">
-          <path 
-            d="M25.64,58.83L2.56,30.04,25.64,1.25" 
-            fill="none"
-            fillRule="evenodd"
-            stroke="#000"
-            strokeWidth="3.5"
-            strokeMiterlimit="10"
-          />
-        </svg>
+        Close ×
       </button>
 
-      {/* Page Indicator Near Cursor */}
-      <div 
-        className="fixed z-[102] text-foreground/60 text-sm font-inter tracking-wide pointer-events-none"
-        style={{ 
-          left: `${cursorPos.x + 20}px`, 
-          top: `${cursorPos.y + 20}px` 
-        }}
-      >
-        {currentIndex + 1} of {images.length}
+      {/* Page Indicator */}
+      <div className="fixed top-6 left-6 z-[200] text-foreground/60 text-xs font-inter tracking-widest uppercase">
+        {currentIndex + 1} / {images.length}
       </div>
 
-      {/* Museum-style Project Details - Bottom Left */}
-      <div className="fixed bottom-8 left-8 z-[101] text-foreground/60 text-xs font-inter leading-relaxed max-w-xs pointer-events-none">
-        {currentImage.photographer && (
-          <div className="mb-1">{currentImage.photographer}</div>
-        )}
-        {currentImage.client && (
-          <div className="mb-1">For {currentImage.client}</div>
-        )}
-        {currentImage.location && currentImage.details && (
-          <div className="text-foreground/40">
-            Shot in {currentImage.location}. {currentImage.details}.
-          </div>
-        )}
-      </div>
+      {/* Nav arrows */}
+      {currentIndex > 0 && (
+        <button
+          onClick={handlePrevious}
+          className="fixed left-4 top-1/2 -translate-y-1/2 z-[200] text-foreground/40 hover:text-foreground transition-opacity text-2xl"
+          aria-label="Previous image"
+        >
+          ←
+        </button>
+      )}
+      {currentIndex < images.length - 1 && (
+        <button
+          onClick={handleNext}
+          className="fixed right-4 top-1/2 -translate-y-1/2 z-[200] text-foreground/40 hover:text-foreground transition-opacity text-2xl"
+          aria-label="Next image"
+        >
+          →
+        </button>
+      )}
 
-      {/* Image Container */}
-      <div
-        ref={containerRef}
-        className="relative w-full h-full flex items-center justify-center px-[10%]"
-        onClick={handleClick}
-      >
-        <img
-          ref={imageRef}
-          src={currentImage.src}
-          alt={currentImage.alt}
-          className="max-w-full max-h-[85vh] object-contain transition-opacity duration-300 pointer-events-none"
-        />
+      <div className="min-h-screen flex flex-col items-center justify-start py-20 px-4 md:px-12">
+        {/* Image */}
+        <div className="w-full flex items-center justify-center">
+          <img
+            src={currentImage.src}
+            alt={currentImage.alt}
+            className="max-w-full max-h-[80vh] object-contain"
+          />
+        </div>
+
+        {/* Metadata below the photo */}
+        <div className="w-full max-w-2xl mt-10 mb-12 text-foreground">
+          {currentImage.title && (
+            <h2 className="text-2xl md:text-3xl font-light tracking-tight mb-4">
+              {currentImage.title}
+            </h2>
+          )}
+
+          {currentImage.description && (
+            <p className="text-base text-foreground/80 leading-relaxed mb-6 font-inter">
+              {currentImage.description}
+            </p>
+          )}
+
+          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-xs font-inter border-t border-border pt-6">
+            {currentImage.category && (
+              <div>
+                <dt className="uppercase tracking-widest text-muted-foreground mb-1">Category</dt>
+                <dd className="text-foreground">{currentImage.category}</dd>
+              </div>
+            )}
+            {currentImage.photo_type && (
+              <div>
+                <dt className="uppercase tracking-widest text-muted-foreground mb-1">Type</dt>
+                <dd className="text-foreground">{currentImage.photo_type}</dd>
+              </div>
+            )}
+            {currentImage.location && (
+              <div>
+                <dt className="uppercase tracking-widest text-muted-foreground mb-1">Location</dt>
+                <dd className="text-foreground">{currentImage.location}</dd>
+              </div>
+            )}
+            {formattedDate && (
+              <div>
+                <dt className="uppercase tracking-widest text-muted-foreground mb-1">Date</dt>
+                <dd className="text-foreground">{formattedDate}</dd>
+              </div>
+            )}
+            {currentImage.photographer && (
+              <div>
+                <dt className="uppercase tracking-widest text-muted-foreground mb-1">Photographer</dt>
+                <dd className="text-foreground">{currentImage.photographer}</dd>
+              </div>
+            )}
+          </dl>
+
+          {currentImage.tags && currentImage.tags.length > 0 && (
+            <div className="mt-6 flex flex-wrap gap-2">
+              {currentImage.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="text-[10px] uppercase tracking-widest font-inter px-2 py-1 border border-border text-muted-foreground"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
