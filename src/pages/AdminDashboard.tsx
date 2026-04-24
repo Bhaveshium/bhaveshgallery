@@ -101,6 +101,7 @@ const AdminDashboard = () => {
   const resetForm = () => {
     setForm({ ...emptyForm });
     setFile(null);
+    setExistingUrl(null);
     setEditingId(null);
     setShowForm(false);
   };
@@ -120,6 +121,9 @@ const AdminDashboard = () => {
       sort_order: item.sort_order || 0,
     });
     setEditingId(item.id);
+    setExistingUrl(item.file_url);
+    setPreviewType(item.type === "video" ? "video" : "image");
+    setFile(null);
     setShowForm(true);
   };
 
