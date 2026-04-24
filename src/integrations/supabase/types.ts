@@ -19,14 +19,17 @@ export type Database = {
           category: string
           client: string | null
           created_at: string | null
+          date_taken: string | null
           description: string | null
           details: string | null
           file_url: string
           height: number | null
           id: string
           location: string | null
+          photo_type: string | null
           photographer: string | null
           sort_order: number | null
+          tags: string[] | null
           thumbnail_url: string | null
           title: string
           type: string
@@ -38,14 +41,17 @@ export type Database = {
           category?: string
           client?: string | null
           created_at?: string | null
+          date_taken?: string | null
           description?: string | null
           details?: string | null
           file_url: string
           height?: number | null
           id?: string
           location?: string | null
+          photo_type?: string | null
           photographer?: string | null
           sort_order?: number | null
+          tags?: string[] | null
           thumbnail_url?: string | null
           title?: string
           type?: string
@@ -57,14 +63,17 @@ export type Database = {
           category?: string
           client?: string | null
           created_at?: string | null
+          date_taken?: string | null
           description?: string | null
           details?: string | null
           file_url?: string
           height?: number | null
           id?: string
           location?: string | null
+          photo_type?: string | null
           photographer?: string | null
           sort_order?: number | null
+          tags?: string[] | null
           thumbnail_url?: string | null
           title?: string
           type?: string
