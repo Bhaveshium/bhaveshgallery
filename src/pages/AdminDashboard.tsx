@@ -292,6 +292,33 @@ const AdminDashboard = () => {
               <Input placeholder="Photographer" value={form.photographer} onChange={(e) => setForm({ ...form, photographer: e.target.value })} />
               <Input placeholder="Sort Order" type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} />
               <Input type="file" accept="image/*,video/*" onChange={(e) => setFile(e.target.files?.[0] || null)} className="md:col-span-2" />
+              {(previewUrl || existingUrl) && (
+                <div className="md:col-span-2 border border-border bg-muted/30 p-3">
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+                    {previewUrl ? "New file preview" : "Current file"}
+                  </p>
+                  <div className="flex justify-center bg-background">
+                    {previewType === "video" ? (
+                      <video
+                        src={previewUrl || existingUrl || ""}
+                        controls
+                        className="max-h-[400px] max-w-full object-contain"
+                      />
+                    ) : (
+                      <img
+                        src={previewUrl || existingUrl || ""}
+                        alt="Preview"
+                        className="max-h-[400px] max-w-full object-contain"
+                      />
+                    )}
+                  </div>
+                  {file && (
+                    <p className="text-xs text-muted-foreground mt-2 truncate">
+                      {file.name} · {(file.size / 1024 / 1024).toFixed(2)} MB
+                    </p>
+                  )}
+                </div>
+              )}
               <Input placeholder="Tags (comma separated, 5–10 keywords)" value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} className="md:col-span-2" />
               <Textarea placeholder="Description (1–2 lines, shown when photo is opened)" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="md:col-span-2" />
               <Textarea placeholder="Additional details (optional)" value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} className="md:col-span-2" />
