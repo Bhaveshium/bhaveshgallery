@@ -50,6 +50,20 @@ const AdminDashboard = () => {
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({ ...emptyForm });
   const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [existingUrl, setExistingUrl] = useState<string | null>(null);
+  const [previewType, setPreviewType] = useState<"image" | "video">("image");
+
+  useEffect(() => {
+    if (!file) {
+      setPreviewUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    setPreviewType(file.type.startsWith("video/") ? "video" : "image");
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
