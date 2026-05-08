@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import portraitImg from "@/assets/gallery/bhavesh-2.png";
+import portraitImg from "@/assets/gallery/bhavesh-about.png";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, { message: "Name is required" }).max(100),
