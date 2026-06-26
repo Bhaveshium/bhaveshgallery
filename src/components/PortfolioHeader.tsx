@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import FocusTrap from "focus-trap-react";
 import { TextRoll } from "@/components/ui/text-roll";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { CATEGORIES, categoryToSlug } from "@/lib/categories";
 
 interface PortfolioHeaderProps {
@@ -40,7 +41,12 @@ const PortfolioHeader = ({ activeCategory }: PortfolioHeaderProps) => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background">
-      <div className="max-w-[1600px] mx-auto px-3 md:px-5 py-3">
+      <div className="relative max-w-[1600px] mx-auto px-3 md:px-5 py-3">
+        {/* Desktop theme toggle */}
+        <div className="hidden md:flex absolute top-3 right-5 z-10 items-center">
+          <ThemeToggle />
+        </div>
+
         {/* Row 1: Name + Mobile menu button (mobile) | Name + About (desktop) */}
         <div className="flex items-center justify-between md:justify-center md:gap-8">
           <Link
@@ -159,6 +165,11 @@ const PortfolioHeader = ({ activeCategory }: PortfolioHeaderProps) => {
                 >
                   ABOUT
                 </Link>
+
+                {/* Theme toggle */}
+                <div className="pt-4">
+                  <ThemeToggle />
+                </div>
               </nav>
             </div>
           </FocusTrap>
