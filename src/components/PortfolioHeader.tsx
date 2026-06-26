@@ -165,6 +165,11 @@ const PortfolioHeader = ({ activeCategory }: PortfolioHeaderProps) => {
                 >
                   ABOUT
                 </Link>
+
+                {/* Theme toggle */}
+                <div className="pt-4">
+                  <ThemeToggle />
+                </div>
               </nav>
             </div>
           </FocusTrap>
