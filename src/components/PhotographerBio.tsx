@@ -6,10 +6,10 @@ const PhotographerBio = () => {
           Bhavesh Chaudhari
         </h2>
         <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-inter">
-          DATA & PHOTOGRAPHY
+          PHOTOGRAPHY
         </p>
         <p className="text-sm text-foreground/80 max-w-2xl leading-relaxed mx-auto">
-          Through lenses and algorithms, we translate light and logic into narratives that make the unseen both visible and meaningful.
+          A lifelong pursuit of seeing — translating light, composition, and emotion into images that make the unseen visible.
         </p>
       </div>
     </section>

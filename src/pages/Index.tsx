@@ -72,17 +72,17 @@ const Index = () => {
     "@type": "Person",
     "name": "Bhavesh Chaudhari",
     "jobTitle": "Photographer",
-    "description": "Photographer blending data-driven creativity with visual storytelling.",
+    "description": "Photographer capturing life through light, composition, and emotion.",
     "url": "https://bhaveshchaudhari.com",
     "sameAs": ["https://pin.it/42bhdp2gA"],
-    "knowsAbout": ["Photography", "Data Analytics", "Portrait Photography", "Fashion Photography"],
+    "knowsAbout": ["Photography", "Portrait Photography", "Fashion Photography", "Visual Storytelling"],
   };
 
   return (
     <>
       <SEO
-        title="Bhavesh Chaudhari - Data & Photography"
-        description="Photographer blending data-driven creativity with visual storytelling. Capturing compelling imagery through light, composition, and emotion."
+        title="Bhavesh Chaudhari - Photography"
+        description="Photographer capturing life through light, composition, and emotion. A lifelong pursuit of seeing the unseen."
         canonicalUrl="/"
         ogType="profile"
         jsonLd={jsonLd}

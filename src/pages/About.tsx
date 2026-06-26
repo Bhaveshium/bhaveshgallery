@@ -52,7 +52,7 @@ const About = () => {
     <>
       <SEO
         title="About - Bhavesh Chaudhari"
-        description="Learn about Bhavesh Chaudhari — data enthusiast and photographer capturing compelling imagery."
+        description="Learn about Bhavesh Chaudhari — photographer capturing life through light, composition, and emotion."
         canonicalUrl="/about"
       />
 
@@ -66,7 +66,7 @@ const About = () => {
                 Bhavesh Chaudhari
               </h1>
               <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-inter">
-                DATA & PHOTOGRAPHY
+                PHOTOGRAPHY
               </p>
             </div>
 
@@ -81,14 +81,13 @@ const About = () => {
 
           <div className="max-w-2xl mx-auto px-3 md:px-5 space-y-8 text-center text-foreground/80 text-sm leading-relaxed mb-16">
             <p>
-              Photographer and data enthusiast blending analytical thinking with creative vision.
-              Capturing compelling imagery that tells stories through light, composition, and emotion.
+              Photographer dedicated to a lifelong practice of seeing. Capturing compelling imagery that tells stories through light, composition, and emotion.
             </p>
 
             <div className="pt-8">
               <h2 className="font-playfair text-xl text-foreground mb-4">What I Do</h2>
               <p className="text-foreground/70 text-xs uppercase tracking-wider leading-loose">
-                Portrait Photography / Story Telling / Automotive / Creative Direction / Data & Analytics
+                Portrait Photography / Story Telling / Automotive / Creative Direction / Visual Exploration
               </p>
             </div>
           </div>
