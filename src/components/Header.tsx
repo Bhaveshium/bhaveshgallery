@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, Instagram, Mail } from "lucide-react";
-import { ThemeToggle } from "./ThemeToggle";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import FocusTrap from "focus-trap-react";
 
 const Header = () => {

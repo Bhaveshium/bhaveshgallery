@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import FocusTrap from "focus-trap-react";
 import { TextRoll } from "@/components/ui/text-roll";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { CATEGORIES, categoryToSlug } from "@/lib/categories";
 
 interface PortfolioHeaderProps {
