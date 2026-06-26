@@ -81,7 +81,7 @@ const About = () => {
 
           <div className="max-w-2xl mx-auto px-3 md:px-5 space-y-8 text-center text-foreground/80 text-sm leading-relaxed mb-16">
             <p>
-              Photographer dedicated to a lifelong practice of seeing. Capturing compelling imagery that tells stories through light, composition, and emotion.
+              Photography is the slow, beautiful practice of growing older alongside the world you capture.
             </p>
 
             <div className="pt-8">
