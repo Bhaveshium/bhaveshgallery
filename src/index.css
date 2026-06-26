@@ -51,24 +51,24 @@ All colors MUST be HSL.
 
   .dark {
     --background: 30 15% 12%;
-    --foreground: 227 50% 75%;
+    --foreground: 174 72% 56%;
 
     --card: 30 15% 15%;
-    --card-foreground: 227 50% 75%;
+    --card-foreground: 174 72% 56%;
 
     --popover: 30 15% 15%;
-    --popover-foreground: 227 50% 75%;
+    --popover-foreground: 174 72% 56%;
 
-    --primary: 227 50% 75%;
+    --primary: 174 72% 56%;
     --primary-foreground: 30 15% 12%;
 
     --secondary: 30 12% 18%;
-    --secondary-foreground: 227 50% 75%;
+    --secondary-foreground: 174 72% 56%;
 
     --muted: 30 12% 20%;
-    --muted-foreground: 227 30% 60%;
+    --muted-foreground: 174 40% 60%;
 
-    --accent: 227 50% 75%;
+    --accent: 174 72% 56%;
     --accent-foreground: 30 15% 12%;
 
     --destructive: 0 84% 60%;
@@ -76,16 +76,16 @@ All colors MUST be HSL.
 
     --border: 30 10% 25%;
     --input: 30 10% 28%;
-    --ring: 227 50% 75%;
+    --ring: 174 72% 56%;
 
     --gray-50: 30 12% 18%;
     --gray-100: 30 12% 22%;
     --gray-200: 30 10% 30%;
     --gray-300: 30 8% 40%;
-    --gray-400: 227 10% 50%;
-    --gray-500: 227 20% 60%;
-    --gray-600: 227 30% 70%;
-    --gray-800: 227 40% 85%;
+    --gray-400: 174 10% 50%;
+    --gray-500: 174 20% 60%;
+    --gray-600: 174 30% 70%;
+    --gray-800: 174 40% 85%;
   }
 }
 
