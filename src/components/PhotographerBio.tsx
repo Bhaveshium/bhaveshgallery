@@ -9,7 +9,7 @@ const PhotographerBio = () => {
           PHOTOGRAPHY
         </p>
         <p className="text-sm text-foreground/80 max-w-2xl leading-relaxed mx-auto">
-          A lifelong pursuit of seeing — translating light, composition, and emotion into images that make the unseen visible.
+          Photography is the slow, beautiful practice of growing older alongside the world you capture.
         </p>
       </div>
     </section>
