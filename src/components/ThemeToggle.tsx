@@ -1,4 +1,4 @@
-import { Moon, Sun } from "lucide-react";
+import { Flashlight, FlashlightOff } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
@@ -23,9 +23,9 @@ export const ThemeToggle = () => {
       aria-live="polite"
     >
       {theme === "dark" ? (
-        <Sun className="w-6 h-6" />
+        <Flashlight className="w-6 h-6" />
       ) : (
-        <Moon className="w-6 h-6" />
+        <FlashlightOff className="w-6 h-6" />
       )}
     </button>
   );
