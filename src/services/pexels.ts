@@ -38,7 +38,7 @@ export interface PexelsResponse {
 export const categoryQueries: Record<string, string> = {
   'SELECTED': 'luxury fashion campaign editorial',
   'COMMISSIONED': 'fashion brand campaign product',
-  'EDITORIAL': 'fashion editorial minimalist vogue',
+  'AUTOMOTIVE': 'automotive car photography sport',
   'PERSONAL': 'black and white portrait artistic'
 };
 

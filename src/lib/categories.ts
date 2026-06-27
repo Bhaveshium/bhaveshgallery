@@ -5,7 +5,7 @@ export const CATEGORIES = [
   "WILDLIFE",
   "MINIMALISM",
   "CONCEPTUAL",
-  "EDITORIAL",
+  "AUTOMOTIVE",
 ] as const;
 
 export type Category = typeof CATEGORIES[number];
